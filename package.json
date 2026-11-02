@@ -1,0 +1,47 @@
+{
+  "name": "zeoton",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "seed": "node --env-file=.env.local --conditions=react-server --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed.mjs",
+    "test:smoke": "node scripts/smoke-test.mjs",
+    "seed:demo": "node --env-file=.env.local --conditions=react-server --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed-demo.mjs",
+    "demo:remove": "node --env-file=.env.local --conditions=react-server --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed-demo.mjs --remove"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "dependencies": {
+    "@ant-design/nextjs-registry": "^1.3.0",
+    "@gsap/react": "^2.1.2",
+    "@hookform/resolvers": "^7.0.1",
+    "@reduxjs/toolkit": "^2.13.0",
+    "antd": "^6.6.8",
+    "bcryptjs": "^3.0.3",
+    "dayjs": "^1.11.23",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.27",
+    "lucide-react": "^1.66.0",
+    "mongoose": "^9.11.4",
+    "next": "^16.4.4",
+    "nextjs-toploader": "^3.9.17",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-hook-form": "^7.91.0",
+    "react-redux": "^9.3.1",
+    "server-only": "^0.0.1",
+    "sharp": "^0.35.5",
+    "three": "^0.187.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.4",
+    "tailwindcss": "^4.3.3"
+  }
+}

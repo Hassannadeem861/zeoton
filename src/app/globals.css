@@ -1,0 +1,173 @@
+@import "tailwindcss";
+
+/* ZEOTON design tokens — derived from the supplied logo
+   (Midnight #151A25 ink, Electric Blue #0A6FFD accent). Keep in sync with src/config/tokens.js. */
+@theme {
+  --color-ink-950: #05070d;
+  --color-ink-900: #070a12;
+  --color-ink-850: #0b101b;
+  --color-ink-800: #0f1524;
+  --color-ink-700: #151a25;
+  --color-ink-600: #1c2433;
+  --color-line: #222c3f;
+  --color-line-strong: #2e3a52;
+
+  --color-blue-300: #8ab8ff;
+  --color-blue-400: #4d95ff;
+  --color-blue-500: #0a6ffd;
+  --color-blue-600: #0059d6;
+  --color-blue-700: #0047ab;
+
+  --color-mist-50: #f5f7fb;
+  --color-mist-100: #e6eaf2;
+  --color-mist-300: #b4bdcc;
+  --color-mist-400: #8d97aa;
+  --color-mist-500: #6b7489;
+
+  --color-success: #22c55e;
+  --color-warning: #f5a524;
+  --color-danger: #f04452;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-sora), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1rem;
+  --shadow-glow: 0 0 0 1px rgb(10 111 253 / 0.35), 0 12px 40px -12px rgb(10 111 253 / 0.45);
+
+  --breakpoint-xs: 26rem;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --header-h: 4rem;
+  }
+
+  html {
+    background: var(--color-ink-900);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink-900 text-mist-100 font-sans antialiased;
+    min-height: 100dvh;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display text-mist-50;
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: rgb(10 111 253 / 0.45);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-blue-400);
+    outline-offset: 2px;
+  }
+
+  input[type='number']::-webkit-inner-spin-button { opacity: 1; }
+}
+
+@utility container-z {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+/* Eyebrow label inspired by the logo's "— GAMING ACCESSORIES —" tagline */
+@utility eyebrow {
+  @apply inline-flex items-center gap-3 text-[0.7rem] font-medium uppercase text-mist-400;
+  letter-spacing: 0.32em;
+  &::before,
+  &::after {
+    content: '';
+    @apply h-px w-6 bg-blue-500;
+  }
+}
+@utility eyebrow-left {
+  &::after { display: none; }
+}
+
+/* Angled cut taken from the logo's Z strokes */
+@utility cut-corner {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition
+    disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2;
+}
+@utility btn-primary {
+  @apply btn bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700;
+  box-shadow: 0 8px 24px -10px rgb(10 111 253 / 0.8);
+}
+@utility btn-secondary {
+  @apply btn border border-line-strong bg-ink-800/60 text-mist-50 hover:border-blue-500/60 hover:bg-ink-700;
+}
+@utility btn-ghost {
+  @apply btn text-mist-300 hover:bg-white/5 hover:text-mist-50;
+}
+@utility btn-lg { @apply px-7 py-3.5 text-base; }
+@utility btn-sm { @apply px-3 py-1.5 text-xs; }
+
+@utility icon-btn {
+  @apply inline-flex h-10 w-10 items-center justify-center rounded-lg text-mist-300 transition hover:bg-white/5 hover:text-mist-50;
+}
+
+@utility surface {
+  @apply rounded-2xl border border-line bg-ink-850/80;
+}
+@utility glass {
+  @apply border border-white/10 bg-ink-800/55 backdrop-blur-xl;
+}
+
+@utility field-label { @apply mb-1.5 block text-sm font-medium text-mist-100; }
+@utility field {
+  @apply w-full rounded-lg border border-line-strong bg-ink-850 px-3.5 py-2.5 text-sm text-mist-50 placeholder:text-mist-500
+    transition outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/25 aria-invalid:border-danger;
+}
+@utility field-error { @apply mt-1 text-xs text-danger; }
+
+@utility prose-z {
+  @apply max-w-3xl leading-relaxed text-mist-300;
+  & h2 { @apply mt-10 mb-3 text-xl font-semibold; }
+  & h3 { @apply mt-6 mb-2 text-lg font-semibold; }
+  & p { @apply my-3; }
+  & ul { @apply my-3 list-disc space-y-1.5 pl-5; }
+  & strong { @apply text-mist-100; }
+  & a { @apply text-blue-400 underline underline-offset-2 hover:text-blue-300; }
+}
+
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+@utility text-gradient {
+  background: linear-gradient(100deg, #fff 30%, var(--color-blue-300) 70%, var(--color-blue-500));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
