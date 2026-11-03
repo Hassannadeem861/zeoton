@@ -157,6 +157,13 @@
   &::-webkit-scrollbar { display: none; }
 }
 
+/* Hero Z mark: gentle float + tilt (static SVG; the 3D scene replaces it on desktop) */
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(-2deg); }
+}
+@utility animate-hero-float { animation: hero-float 5s ease-in-out infinite; }
+
 /* Lenis */
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }

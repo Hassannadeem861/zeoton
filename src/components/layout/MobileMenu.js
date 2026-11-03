@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Menu, X } from 'lucide-react';
 import { mainNav } from '@/config/site';
 import Logo from '@/components/brand/Logo';
@@ -37,7 +38,8 @@ export default function MobileMenu({ categories }) {
       <button type="button" className="icon-btn -ml-2 lg:hidden" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen(true)}>
         <Menu className="h-5 w-5" />
       </button>
-      {open && (
+      {/* Portal: the sticky header uses backdrop-filter, which would trap a fixed overlay inside it. */}
+      {open && createPortal(
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} aria-hidden />
           <div ref={panelRef} className="absolute inset-y-0 left-0 flex w-[86%] max-w-sm flex-col border-r border-line bg-ink-850" data-lenis-prevent>
@@ -74,7 +76,7 @@ export default function MobileMenu({ categories }) {
             </nav>
           </div>
         </div>
-      )}
+      , document.body)}
     </>
   );
 }

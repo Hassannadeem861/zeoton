@@ -2,6 +2,7 @@ import AnnouncementBar from '@/components/layout/AnnouncementBar';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import CartDrawer from '@/components/cart/CartDrawer';
+import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import WishlistSync from '@/components/account/WishlistSync';
 import JsonLd from '@/components/seo/JsonLd';
 import LenisProvider from '@/providers/LenisProvider';
@@ -27,6 +28,7 @@ export default async function StoreLayout({ children }) {
       </main>
       <Footer categories={navCategories} socialLinks={seo.socialLinks} />
       <CartDrawer />
+      <WhatsAppButton />
       <WishlistSync />
     </LenisProvider>
   );

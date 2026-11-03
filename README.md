@@ -1,5 +1,7 @@
 # ZEOTON — Gaming Accessories Store (Pakistan)
 
+**Live:** https://www.zeoton.online
+
 Next.js 16 (App Router, JavaScript) · MongoDB Atlas + Mongoose · Redux Toolkit + RTK Query · Tailwind CSS 4 · Ant Design 6 (admin only) · GSAP · Three.js · Lenis · Cloudinary.
 
 ## Quick start

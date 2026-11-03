@@ -43,7 +43,7 @@ export default function HeroVisual() {
           ready ? 'opacity-0' : 'opacity-100',
         )}
       >
-        <BrandMark className="w-[62%] text-mist-50 drop-shadow-[0_20px_60px_rgba(10,111,253,0.35)]" />
+        <BrandMark className="animate-hero-float w-[62%] text-mist-50 drop-shadow-[0_20px_60px_rgba(10,111,253,0.35)]" />
       </div>
       {load3D && (
         <div className={cn('absolute inset-0 transition-opacity duration-700', ready ? 'opacity-100' : 'opacity-0')}>

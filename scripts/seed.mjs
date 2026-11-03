@@ -30,7 +30,6 @@ async function seedCategories() {
 async function seedAdmin() {
   const email = requireEnv('SEED_ADMIN_EMAIL').toLowerCase().trim();
   const password = requireEnv('SEED_ADMIN_PASSWORD');
-  if (password.length < 12) throw new Error('SEED_ADMIN_PASSWORD must be at least 12 characters');
 
   const existing = await User.findOne({ email }).select('+passwordHash role');
   if (existing) {
@@ -39,6 +38,8 @@ async function seedAdmin() {
     }
     return { created: false, email };
   }
+  // Only enforced when creating a new admin; an existing admin's password is never changed here.
+  if (password.length < 12) throw new Error('SEED_ADMIN_PASSWORD must be at least 12 characters');
   await User.create({
     name: process.env.SEED_ADMIN_NAME || 'ZEOTON Admin',
     email,

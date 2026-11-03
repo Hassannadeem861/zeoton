@@ -1,7 +1,8 @@
 export const siteConfig = {
   name: 'ZEOTON',
   tagline: 'Gaming Accessories',
-  url: (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/$/, ''),
+  // Live site: https://www.zeoton.online (override with NEXT_PUBLIC_SITE_URL per environment).
+  url: (process.env.NEXT_PUBLIC_SITE_URL || (process.env.NODE_ENV === 'production' ? 'https://www.zeoton.online' : 'http://localhost:3000')).replace(/\/$/, ''),
   description:
     'ZEOTON is an online store for gaming accessories in Pakistan: gaming mice, keyboards, headsets, controllers and setup gear, with Cash on Delivery nationwide.',
   email: 'zeoton.online@gmail.com',

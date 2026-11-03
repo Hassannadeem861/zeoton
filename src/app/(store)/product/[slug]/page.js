@@ -66,7 +66,7 @@ export default async function ProductPage({ params }) {
 
   return (
     <>
-      {!product.isDemo && <JsonLd data={productJsonLd(product)} />}
+      <JsonLd data={productJsonLd(product)} />
       <TrackRecentlyViewed productId={product._id} />
 
       <div className="container-z py-8">
