@@ -61,6 +61,7 @@ function StoreSection({ value }) {
         </Card>
         <Card title="Payment" className="mb-4">
           <RHFItem control={control} name="payment.codEnabled" label="Cash on Delivery enabled" checkbox render={(p) => <Switch {...p} />} />
+          <RHFItem control={control} name="payment.bankQrEnabled" label="Meezan Bank QR enabled" checkbox render={(p) => <Switch {...p} />} />
           <RHFItem control={control} name="payment.codNote" label="Note shown at checkout" render={(p) => <Input {...p} maxLength={300} />} />
           <p className="text-xs text-mist-400">Online payments (JazzCash, Easypaisa, cards) are not integrated yet; they can be added later through the payment provider registry.</p>
         </Card>

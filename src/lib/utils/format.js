@@ -38,4 +38,4 @@ export const ORDER_STATUS_LABELS = {
   cancelled: 'Cancelled',
 };
 
-export const PAYMENT_LABELS = { cod: 'Cash on Delivery' };
+export const PAYMENT_LABELS = { cod: 'Cash on Delivery', bank_qr: 'Meezan Bank QR' };

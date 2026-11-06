@@ -16,6 +16,16 @@ const providers = {
     // COD is collected by the courier; payment stays "pending" until an admin marks it paid.
     initiate: async () => ({ status: 'pending' }),
   },
+  // Manual bank transfer via Meezan Bank QR: the customer uploads a payment screenshot and
+  // an admin verifies it in the panel before the order is confirmed.
+  bank_qr: {
+    id: 'bank_qr',
+    label: 'Meezan Bank QR',
+    online: false,
+    requiresProof: true,
+    isEnabled: (store) => store?.payment?.bankQrEnabled !== false,
+    initiate: async () => ({ status: 'pending' }),
+  },
 };
 
 export function getPaymentProvider(id) {

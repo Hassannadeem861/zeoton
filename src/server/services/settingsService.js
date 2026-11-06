@@ -17,7 +17,7 @@ export const SETTINGS_DEFAULTS = {
       coverageText: 'We deliver all over Pakistan.',
       deliveryTimeText: '',
     },
-    payment: { codEnabled: true, codNote: 'Pay in cash when your order is delivered.' },
+    payment: { codEnabled: true, bankQrEnabled: true, codNote: 'Pay in cash when your order is delivered.' },
     lowStockDefault: 5,
   },
   policies: { shippingPolicy: '', returnsPolicy: '' },

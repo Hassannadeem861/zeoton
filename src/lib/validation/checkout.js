@@ -29,7 +29,7 @@ export const cartQuoteSchema = z.object({
   couponCode: optionalText(30),
 });
 
-export const PAYMENT_METHODS = ['cod'];
+export const PAYMENT_METHODS = ['cod', 'bank_qr'];
 
 export const checkoutSchema = z.object({
   email: z
@@ -44,6 +44,7 @@ export const checkoutSchema = z.object({
   couponCode: optionalText(30),
   notes: optionalText(500),
   paymentMethod: z.enum(PAYMENT_METHODS).default('cod'),
+  paymentProof: z.object({ publicId: z.string().min(1).max(200) }).optional(),
   saveAddress: z.boolean().optional(),
 });
 

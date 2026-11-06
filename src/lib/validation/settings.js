@@ -13,6 +13,7 @@ export const storeSettingsSchema = z.object({
   }),
   payment: z.object({
     codEnabled: z.boolean().default(true),
+    bankQrEnabled: z.boolean().default(true),
     codNote: optionalText(300),
   }),
   lowStockDefault: z.coerce.number().int().min(0).max(1000).default(5),

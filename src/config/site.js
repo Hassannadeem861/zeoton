@@ -13,6 +13,7 @@ export const siteConfig = {
   locale: 'en_PK',
   ogImage: '/og-default.png',
   logo: '/brand/zeoton-logo-light.png',
+  bankQr: { bank: 'Meezan Bank', accountTitle: 'MAAZ NAEEM', image: '/payments/meezan-qr.jpg' },
 };
 
 export const mainNav = [

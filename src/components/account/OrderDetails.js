@@ -74,7 +74,7 @@ export default function OrderDetails({ order }) {
         <div className="flex justify-between border-t border-line pt-2 text-base font-semibold"><dt>Total</dt><dd>{formatPKR(order.total)}</dd></div>
         <div className="flex justify-between text-xs text-mist-400">
           <dt>Payment</dt>
-          <dd>{PAYMENT_LABELS[order.payment.method] || order.payment.method} · {order.payment.status === 'paid' ? 'Paid' : 'To be paid on delivery'}</dd>
+          <dd>{PAYMENT_LABELS[order.payment.method] || order.payment.method} · {order.payment.status === 'paid' ? 'Paid' : order.payment.status === 'failed' ? 'Payment rejected' : order.payment.method === 'bank_qr' ? 'Payment verification pending' : 'To be paid on delivery'}</dd>
         </div>
       </dl>
 

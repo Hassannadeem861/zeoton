@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDispatch } from 'react-redux';
-import { Banknote, Loader2, Lock } from 'lucide-react';
+import { Loader2, Lock } from 'lucide-react';
 import { checkoutSchema } from '@/lib/validation/checkout';
 
 // Cart items come from the store, not form fields; the server validates the full schema.
@@ -22,6 +22,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import Field, { fieldProps } from '@/components/ui/Field';
 import ProductImage from '@/components/product/ProductImage';
 import AddressFields from './AddressFields';
+import PaymentOptions from './PaymentOptions';
 import DemoBadge, { DemoCartNotice } from '@/components/product/DemoBadge';
 
 export default function CheckoutForm() {
@@ -34,17 +35,22 @@ export default function CheckoutForm() {
   const [placeOrder, { isLoading: placing }] = usePlaceOrderMutation();
   const [formError, setFormError] = useState(null);
   const [placed, setPlaced] = useState(false);
+  const [proofFile, setProofFile] = useState(null);
 
   const {
     register,
     handleSubmit,
     reset,
+    control,
+    setValue,
     setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '', notes: '', paymentMethod: 'cod', saveAddress: true, shippingAddress: { province: '' } },
   });
+
+  const method = useWatch({ control, name: 'paymentMethod' });
 
   // Prefill from the signed-in customer's default address.
   useEffect(() => {
@@ -70,19 +76,31 @@ export default function CheckoutForm() {
     return <EmptyState title="Your cart is empty" description="Add products to your cart before checking out." actionHref="/products" actionLabel="Browse products" />;
   }
 
+  // Bank QR: upload the payment screenshot first, then place the order with its reference.
+  const uploadProof = async () => {
+    const body = new FormData();
+    body.append('file', proofFile);
+    const res = await fetch('/api/payments/proof', { method: 'POST', body, credentials: 'same-origin' });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.message || 'Screenshot upload failed. Please try again.');
+    return { publicId: json.publicId };
+  };
+
   const onSubmit = async (values) => {
     setFormError(null);
+    if (method === 'bank_qr' && !proofFile) return setFormError('Please upload your payment screenshot.');
     try {
-      const res = await placeOrder({ ...values, items, couponCode: couponCode || undefined }).unwrap();
+      const paymentProof = method === 'bank_qr' ? await uploadProof() : undefined;
+      const res = await placeOrder({ ...values, paymentProof, items, couponCode: couponCode || undefined }).unwrap();
       setPlaced(true);
       dispatch(clearCart());
-      router.replace(`/checkout/success?order=${encodeURIComponent(res.orderNumber)}`);
+      router.replace(`/checkout/success?order=${encodeURIComponent(res.orderNumber)}&pay=${method}&t=${res.statusToken}`);
     } catch (err) {
       if (!applyServerFieldErrors(err, setError)) setFormError(getErrorMessage(err));
     }
   };
 
-  const cod = quote?.paymentMethods?.find((m) => m.id === 'cod');
+  const hasMethods = quote?.paymentMethods?.length > 0;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-8 lg:grid-cols-[1fr_400px]">
@@ -116,17 +134,16 @@ export default function CheckoutForm() {
 
         <section className="surface p-5 sm:p-6" aria-labelledby="pay-h">
           <h2 id="pay-h" className="mb-4 text-lg font-semibold">Payment</h2>
-          {cod ? (
-            <div className="flex items-start gap-3 rounded-xl border border-blue-500/60 bg-blue-500/10 p-4">
-              <Banknote className="mt-0.5 h-5 w-5 text-blue-300" aria-hidden />
-              <div>
-                <p className="font-medium text-mist-50">Cash on Delivery</p>
-                <p className="mt-0.5 text-sm text-mist-300">{quote?.codNote || 'Pay in cash when your order is delivered.'}</p>
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm text-warning">No payment method is available right now. Please contact us to place your order.</p>
-          )}
+          <PaymentOptions
+            methods={quote?.paymentMethods}
+            value={method}
+            onChange={(m) => setValue('paymentMethod', m)}
+            codNote={quote?.codNote}
+            total={quote?.total}
+            shippingPending={quote?.shipping?.pending}
+            file={proofFile}
+            onFile={setProofFile}
+          />
         </section>
       </div>
 
@@ -162,7 +179,7 @@ export default function CheckoutForm() {
             Some items changed. <Link href="/cart" className="underline">Review your cart</Link>.
           </p>
         )}
-        <button type="submit" className="btn-primary btn-lg w-full" disabled={placing || !cod || quote?.hasIssues}>
+        <button type="submit" className="btn-primary btn-lg w-full" disabled={placing || !hasMethods || quote?.hasIssues}>
           {placing ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden /> : <Lock className="h-4 w-4" aria-hidden />}
           {placing ? 'Placing order…' : 'Place order'}
         </button>

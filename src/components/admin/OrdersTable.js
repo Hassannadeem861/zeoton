@@ -46,7 +46,7 @@ export default function OrdersTable() {
             ),
           },
           { title: 'Status', dataIndex: 'status', render: (s) => <OrderStatusTag status={s} /> },
-          { title: 'Payment', render: (_, o) => <PaymentStatusTag status={o.payment.status} /> },
+          { title: 'Payment', render: (_, o) => <span><PaymentStatusTag status={o.payment.status} />{o.payment.method === 'bank_qr' && <Tag color="purple">QR</Tag>}</span> },
         ]}
       />
     </>

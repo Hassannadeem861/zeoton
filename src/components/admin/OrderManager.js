@@ -65,7 +65,32 @@ function OrderControls({ order }) {
         )}
       </Card>
 
-      <Card title="Payment (Cash on Delivery)">
+      {order.payment.method === 'bank_qr' && (
+        <Card title="Payment (Meezan Bank QR)">
+          <PaymentStatusTag status={order.payment.status} />
+          {order.payment.proof?.url ? (
+            <a href={order.payment.proof.url} target="_blank" rel="noopener noreferrer" className="mt-3 block">
+              {/* eslint-disable-next-line @next/next/no-img-element -- admin preview of the customer's screenshot */}
+              <img src={order.payment.proof.url} alt="Payment screenshot" className="max-h-96 w-full rounded-lg border border-line object-contain" />
+            </a>
+          ) : (
+            <p className="mt-2 text-sm text-mist-400">No screenshot uploaded.</p>
+          )}
+          <p className="mt-2 text-xs text-mist-400">Check your Meezan Bank app: the amount ({formatPKR(order.total)}) must have arrived before you verify.</p>
+          {order.payment.status === 'pending' && order.status !== 'cancelled' && (
+            <Space className="mt-3" wrap>
+              <Button type="primary" loading={isLoading} onClick={() => run({ paymentStatus: 'paid', ...(order.status === 'pending' ? { status: 'confirmed' } : {}), note: 'Payment verified' }, 'Payment verified. Order confirmed.')}>
+                Verify payment
+              </Button>
+              <Button danger onClick={() => modal.confirm({ title: 'Reject this payment?', content: 'The order will be cancelled and stock returned.', okButtonProps: { danger: true }, onOk: () => run({ paymentStatus: 'failed', status: 'cancelled', note: 'Payment screenshot rejected' }, 'Payment rejected. Order cancelled.') })}>
+                Reject (fake / not received)
+              </Button>
+            </Space>
+          )}
+        </Card>
+      )}
+
+      {order.payment.method === 'cod' && <Card title="Payment (Cash on Delivery)">
         <Space wrap>
           <PaymentStatusTag status={order.payment.status} />
           {order.payment.status !== 'paid' ? (
@@ -77,7 +102,7 @@ function OrderControls({ order }) {
           )}
         </Space>
         {order.status !== 'delivered' && order.payment.status !== 'paid' && <p className="mt-2 text-xs text-mist-400">Available after the order is delivered.</p>}
-      </Card>
+      </Card>}
 
       <Card title="Shipping charge">
         <Space.Compact className="w-full">

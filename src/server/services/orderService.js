@@ -1,6 +1,8 @@
 import 'server-only';
+import crypto from 'node:crypto';
 import mongoose from 'mongoose';
-import { Counter, Coupon, Order, Product, User } from '@/server/models';
+import { Counter, Coupon, Media, Order, Product, User } from '@/server/models';
+import { PROOF_FOLDER } from '@/server/media/paymentProof';
 import { HttpError, notFound } from '@/server/http/errors';
 import { getPaymentProvider } from '@/server/payments';
 import { escapeRegex, plain } from '@/server/utils';
@@ -56,6 +58,16 @@ export async function placeOrder(input, user) {
   const provider = getPaymentProvider(input.paymentMethod);
   if (!provider || !provider.isEnabled(store)) throw new HttpError(400, 'This payment method is not available.');
 
+  let proof = null;
+  if (provider.requiresProof) {
+    const media = input.paymentProof
+      ? await Media.findOne({ publicId: input.paymentProof.publicId, folder: PROOF_FOLDER, usedBy: null }).lean()
+      : null;
+    if (!media) throw new HttpError(400, 'Please upload your payment screenshot.', { code: 'PAYMENT_PROOF_REQUIRED' });
+    proof = { url: media.url, publicId: media.publicId, uploadedAt: media.createdAt };
+  }
+
+  const statusToken = crypto.randomBytes(16).toString('hex');
   const session = await mongoose.startSession();
   let order;
   try {
@@ -105,10 +117,11 @@ export async function placeOrder(input, user) {
             coupon: quote.coupon ? { code: quote.coupon.code, type: quote.coupon.type, value: quote.coupon.value } : undefined,
             shippingFee: quote.shipping.fee,
             total: quote.total,
-            payment: { method: provider.id, status: 'pending' },
+            payment: { method: provider.id, status: 'pending', ...(proof ? { proof } : {}) },
             status: 'pending',
             statusHistory: [{ status: 'pending', note: 'Order placed' }],
             notes: input.notes,
+            statusToken,
             isDemo: quote.hasDemoItems,
           },
         ],
@@ -120,6 +133,7 @@ export async function placeOrder(input, user) {
     await session.endSession();
   }
 
+  if (proof) await Media.updateOne({ publicId: proof.publicId }, { $set: { usedBy: order._id } });
   const payment = await provider.initiate(order);
 
   if (user && input.saveAddress) {
@@ -128,6 +142,7 @@ export async function placeOrder(input, user) {
 
   return {
     orderNumber: order.orderNumber,
+    statusToken,
     total: order.total,
     shippingPending: order.shippingFee == null,
     payment: { method: provider.id, status: payment.status, redirectUrl: payment.redirectUrl || null },
@@ -185,6 +200,13 @@ export async function getOrderForUser(userId, orderNumber) {
   const order = await Order.findOne({ user: userId, orderNumber }).lean();
   if (!order) throw notFound('Order not found.');
   return publicOrderView(order, { includeAddress: true });
+}
+
+/** Live status for the checkout success page (order number + secret token from checkout). */
+export async function getOrderStatusByToken(orderNumber, token) {
+  if (!/^ZT-\d{6,}$/.test(orderNumber || '') || !/^[a-f0-9]{32}$/.test(token || '')) return null;
+  const o = await Order.findOne({ orderNumber, statusToken: token }).select('status payment.method payment.status').lean();
+  return o ? { status: o.status, paymentMethod: o.payment.method, paymentStatus: o.payment.status } : null;
 }
 
 /** Guest tracking: order number + phone must both match. No full address is returned. */

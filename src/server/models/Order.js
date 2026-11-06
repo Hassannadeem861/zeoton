@@ -51,6 +51,8 @@ const orderSchema = new mongoose.Schema(
       provider: { type: String, default: null },
       transactionId: { type: String, default: null },
       paidAt: Date,
+      // Payment screenshot uploaded by the customer (bank QR transfers).
+      proof: { url: String, publicId: String, uploadedAt: Date },
     },
     status: { type: String, enum: ORDER_STATUSES, default: 'pending', index: true },
     statusHistory: [
@@ -65,6 +67,8 @@ const orderSchema = new mongoose.Schema(
     notes: { type: String, trim: true, maxlength: 500 },
     adminNotes: { type: String, trim: true, maxlength: 2000 },
     soldCounted: { type: Boolean, default: false },
+    // Secret for the checkout success page to read live status (not exposed elsewhere).
+    statusToken: { type: String, select: false },
     // True when the order contains demo products (test order; excluded from dashboard figures).
     isDemo: { type: Boolean, default: false },
   },

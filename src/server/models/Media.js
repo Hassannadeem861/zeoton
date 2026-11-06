@@ -17,6 +17,8 @@ const mediaSchema = new mongoose.Schema(
     withinTarget: { type: Boolean, default: true },
     folder: String,
     uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    // Payment proofs: the order that used this upload (each proof can be used once).
+    usedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', default: null },
   },
   { timestamps: true },
 );
