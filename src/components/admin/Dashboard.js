@@ -25,7 +25,7 @@ export default function Dashboard() {
   return (
     <>
       <PageTitle title="Dashboard" description="All figures come from real orders and products in the database." />
-      {(data.products.demo > 0 || data.demoOrders > 0) && (
+      {data.products.demo > 0 && (
         <Alert type="warning" showIcon className="mb-4" title={`Demo catalog active: ${data.products.demo} demo products. ${data.demoOrders} test order(s) with demo items are excluded from these figures.`} />
       )}
       <Row gutter={[16, 16]}>

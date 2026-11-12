@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "node init && next dev",
+    "build": "node init && next build",
+    "start": "node init && next start",
     "lint": "eslint .",
     "seed": "node --env-file=.env.local --conditions=react-server --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/seed.mjs",
     "test:smoke": "node scripts/smoke-test.mjs",

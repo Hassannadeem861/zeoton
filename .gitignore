@@ -7,7 +7,6 @@
 /build
 
 # env files (never commit secrets)
-.env*
 !.env.example
 
 # misc
@@ -15,3 +14,4 @@
 *.pem
 npm-debug.log*
 .vercel
+config.bat
